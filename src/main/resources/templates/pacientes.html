@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Pacientes</h1>
+<div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
+
+<form th:action="@{/pacientes/importar}" method="post" enctype="multipart/form-data">
+    <input type="file" name="arquivo" accept=".csv" required>
+    <button type="submit">Importar CSV</button>
+</form>
 
 <form th:action="@{/pacientes}" th:object="${paciente}" method="post">
     <input type="text" th:field="*{nome}" placeholder="Nome">
