@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes</title>
+</head>
+<body>
+<h1>Pacientes</h1>
+
+<form th:action="@{/pacientes}" th:object="${paciente}" method="post">
+    <input type="text" th:field="*{nome}" placeholder="Nome">
+    <input type="text" th:field="*{telefone}" placeholder="Telefone com DDD">
+    <button type="submit">Salvar</button>
+    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha nome e telefone.</div>
+</form>
+
+<table border="1">
+    <tr><th>Nome</th><th>Telefone</th><th></th></tr>
+    <tr th:each="p : ${pacientes}">
+        <td th:text="${p.nome}"></td>
+        <td th:text="${p.telefone}"></td>
+        <td>
+            <form th:action="@{/pacientes/{id}/excluir(id=${p.id})}" method="post">
+                <button type="submit">Excluir</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
