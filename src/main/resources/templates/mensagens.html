@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mensagens</title>
+</head>
+<body>
+<h1>Enviar mensagem</h1>
+<a th:href="@{/pacientes}">Pacientes</a>
+
+<div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
+<div th:if="${erro}" th:text="${erro}" style="color:red"></div>
+
+<form th:action="@{/mensagens}" method="post">
+        <textarea name="texto" rows="4" cols="50" maxlength="1000"
+                  placeholder="Ex.: Pessoal, salvem o telefone do posto de saúde na agenda."></textarea>
+    <br>
+    <button type="submit">Enviar para todos os pacientes ativos</button>
+</form>
+
+<h2>Histórico</h2>
+<table border="1">
+    <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th></tr>
+    <tr th:each="e : ${envios}">
+        <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${e.texto}"></td>
+        <td th:text="${e.totalDestinatarios}"></td>
+    </tr>
+</table>
+</body>
+</html>
