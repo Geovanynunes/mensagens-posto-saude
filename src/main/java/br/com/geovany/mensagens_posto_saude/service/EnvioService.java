@@ -20,7 +20,7 @@ public class EnvioService {
 
     private final PacienteRepository pacienteRepository;
     private final EnvioRepository envioRepository;
-    private final MensagemSender sender;
+    private final MensagemSender mensagemSender;
     private final EnvioDestinatarioRepository destinatarioRepository;
     private final long intervaloMs;
 
@@ -32,7 +32,7 @@ public class EnvioService {
         this.pacienteRepository = pacienteRepository;
         this.envioRepository = envioRepository;
         this.destinatarioRepository = destinatarioRepository;
-        this.sender = sender;
+        this.mensagemSender = sender;
         this.intervaloMs = intervaloMs;
 
     }
@@ -67,7 +67,7 @@ public class EnvioService {
 
             ResultadoEnvio resultado;
             try {
-                resultado = sender.enviar(p.getTelefone(), textoFinal);
+                resultado = mensagemSender.enviar(p.getTelefone(), textoFinal);
             } catch (Exception e) {
                 resultado = ResultadoEnvio.falha(e.getMessage());
             }
