@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do envio</title>
+</head>
+<body>
+<h1>Detalhes do envio</h1>
+<a th:href="@{/mensagens}">Voltar</a>
+
+<p th:text="${envio.texto}"></p>
+<p th:text="${#temporals.format(envio.dataHora, 'dd/MM/yyyy HH:mm')}"></p>
+
+<table border="1">
+    <tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Erro</th></tr>
+    <tr th:each="d : ${destinatarios}">
+        <td th:text="${d.nome}"></td>
+        <td th:text="${d.telefone}"></td>
+        <td th:text="${d.status}"></td>
+        <td th:text="${d.erro}"></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -37,11 +37,13 @@
 
 <h2>Histórico</h2>
 <table border="1">
-    <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th></tr>
+    <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
     <tr th:each="e : ${envios}">
         <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
         <td th:text="${e.texto}"></td>
         <td th:text="${e.totalDestinatarios}"></td>
+        <td th:text="${e.falhas}"></td>
+        <td><a th:href="@{/mensagens/{id}(id=${e.id})}">Detalhes</a></td>
     </tr>
 </table>
 
