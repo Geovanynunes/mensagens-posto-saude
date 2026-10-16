@@ -1,7 +1,9 @@
 package br.com.geovany.mensagens_posto_saude.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 //historico
 public class Envio {
 
@@ -21,9 +24,6 @@ public class Envio {
 
     private LocalDateTime dataHora;
     private int totalDestinatarios;
-
-
-    protected Envio() {}
 
     private Integer falhas = 0;
 

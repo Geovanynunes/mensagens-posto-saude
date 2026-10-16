@@ -3,12 +3,15 @@ package br.com.geovany.mensagens_posto_saude.entities;
 import br.com.geovany.mensagens_posto_saude.enums.StatusEnvio;
 import br.com.geovany.mensagens_posto_saude.sender.ResultadoEnvio;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class EnvioDestinatario {
 
     @Id
@@ -26,9 +29,6 @@ public class EnvioDestinatario {
 
     @Column(length = 500)
     private String erro;
-
-    protected EnvioDestinatario() {
-    }
 
     public EnvioDestinatario(Envio envio, Paciente paciente, ResultadoEnvio resultado) {
         this.envio = envio;
