@@ -13,9 +13,26 @@
 
 <form th:action="@{/mensagens}" method="post">
         <textarea name="texto" rows="4" cols="50" maxlength="1000"
-                  placeholder="Ex.: Pessoal, salvem o telefone do posto de saúde na agenda."></textarea>
-    <br>
-    <button type="submit">Enviar para todos os pacientes ativos</button>
+                  placeholder="Escreva a mensagem"></textarea>
+
+    <h3>Destinatários</h3>
+    <input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
+    <label><input type="checkbox" id="todos"> Marcar todos os filtrados</label>
+    <span id="contador">0 selecionados</span>
+
+    <table border="1" id="tabela">
+        <thead><tr><th></th><th>Nome</th><th>Telefone</th></tr></thead>
+        <tbody>
+        <tr th:each="p : ${pacientes}"
+            th:attr="data-busca=${#strings.toLowerCase(p.nome + ' ' + p.telefone)}">
+            <td><input type="checkbox" name="ids" th:value="${p.id}"></td>
+            <td th:text="${p.nome}"></td>
+            <td th:text="${p.telefone}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="submit">Enviar para os selecionados</button>
 </form>
 
 <h2>Histórico</h2>
@@ -27,5 +44,35 @@
         <td th:text="${e.totalDestinatarios}"></td>
     </tr>
 </table>
+
+<script>
+    const busca = document.getElementById('busca');
+    const todos = document.getElementById('todos');
+    const contador = document.getElementById('contador');
+    const linhas = () => document.querySelectorAll('#tabela tbody tr');
+
+    function atualizarContador() {
+        const n = document.querySelectorAll('#tabela tbody input:checked').length;
+        contador.textContent = n + ' selecionados';
+    }
+
+    busca.addEventListener('input', () => {
+        const termo = busca.value.toLowerCase().trim();
+        linhas().forEach(tr => {
+            tr.style.display = tr.dataset.busca.includes(termo) ? '' : 'none';
+        });
+    });
+
+    todos.addEventListener('change', () => {
+        linhas().forEach(tr => {
+            if (tr.style.display !== 'none') {
+                tr.querySelector('input').checked = todos.checked;
+            }
+        });
+        atualizarContador();
+    });
+
+    document.querySelector('#tabela tbody').addEventListener('change', atualizarContador);
+</script>
 </body>
 </html>

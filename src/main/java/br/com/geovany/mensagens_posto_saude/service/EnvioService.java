@@ -24,8 +24,8 @@ public class EnvioService {
         this.sender = sender;
     }
 
-    public int enviarParaTodos(String texto) {
-        List<Paciente> pacientes = pacienteRepository.findAll().stream()
+    public int enviarParaSelecionados(List<Long> ids, String texto) {
+        List<Paciente> pacientes = pacienteRepository.findAllById(ids).stream()
                 .filter(Paciente::isAtivo)
                 .toList();
 
