@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1>Pacientes</h1>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Sair</button>
+</form>
 <div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
 
 <form th:action="@{/pacientes/importar}" method="post" enctype="multipart/form-data">

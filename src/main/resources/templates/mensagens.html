@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1>Enviar mensagem</h1>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Sair</button>
+</form>
 <a th:href="@{/pacientes}">Pacientes</a>
 
 <div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>

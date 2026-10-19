@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrar</title>
+</head>
+<body>
+<h1>Entrar</h1>
+
+<div th:if="${param.error}" style="color:red">Usuário ou senha inválidos.</div>
+<div th:if="${param.logout}" style="color:green">Você saiu do sistema.</div>
+
+<form th:action="@{/login}" method="post">
+    <input type="text" name="username" placeholder="Usuário" required autofocus>
+    <input type="password" name="password" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+</form>
+</body>
+</html>
