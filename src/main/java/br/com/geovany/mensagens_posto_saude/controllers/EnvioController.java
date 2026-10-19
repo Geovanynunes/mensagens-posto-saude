@@ -3,6 +3,7 @@ package br.com.geovany.mensagens_posto_saude.controllers;
 import br.com.geovany.mensagens_posto_saude.entities.Envio;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioDestinatarioRepository;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioRepository;
+import br.com.geovany.mensagens_posto_saude.repository.ModeloMensagemRepository;
 import br.com.geovany.mensagens_posto_saude.repository.PacienteRepository;
 import br.com.geovany.mensagens_posto_saude.service.EnvioService;
 import org.springframework.http.HttpStatus;
@@ -22,18 +23,21 @@ public class EnvioController {
     private final EnvioRepository repository;
     private final PacienteRepository pacienteRepository;
     private final EnvioDestinatarioRepository envioDestinatarioRepository;
+    private final ModeloMensagemRepository modeloMensagemRepository;
 
-    public EnvioController(EnvioService service, EnvioRepository repository, PacienteRepository pacienteRepository, EnvioDestinatarioRepository envioDestinatarioRepository) {
+    public EnvioController(EnvioService service, EnvioRepository repository, PacienteRepository pacienteRepository, EnvioDestinatarioRepository envioDestinatarioRepository, ModeloMensagemRepository modeloMensagemRepository) {
         this.service = service;
         this.repository = repository;
         this.pacienteRepository = pacienteRepository;
         this.envioDestinatarioRepository = envioDestinatarioRepository;
+        this.modeloMensagemRepository = modeloMensagemRepository;
     }
 
     @GetMapping
     public String tela(Model model) {
         model.addAttribute("pacientes", pacienteRepository.findByAtivoTrueOrderByNomeAsc());
         model.addAttribute("envios", repository.findAllByOrderByDataHoraDesc());
+        model.addAttribute("modelos", modeloMensagemRepository.findAllByOrderByTituloAsc());
         return "mensagens";
     }
 

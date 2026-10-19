@@ -10,12 +10,20 @@
     <button type="submit">Sair</button>
 </form>
 <a th:href="@{/pacientes}">Pacientes</a>
+<a th:href="@{/modelos}">Modelos</a>
 
 <div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
 <div th:if="${erro}" th:text="${erro}" style="color:red"></div>
 
 <form th:action="@{/mensagens}" method="post">
-        <textarea name="texto" rows="4" cols="50" maxlength="1000"
+        <label>Usar modelo:
+            <select id="modelo">
+                <option value="">escolher...</option>
+                <option th:each="m : ${modelos}" th:value="${m.texto}" th:text="${m.titulo}"></option>
+            </select>
+        </label>
+        <br>
+        <textarea name="texto" id="texto" rows="4" cols="50" maxlength="1000"
                   placeholder="Ex.: Olá, {nome}! Salve o telefone do posto de saúde na sua agenda."></textarea>
 
     <h3>Destinatários</h3>
@@ -75,6 +83,12 @@
             }
         });
         atualizarContador();
+    });
+
+    document.getElementById('modelo').addEventListener('change', e => {
+        if (e.target.value) {
+            document.getElementById('texto').value = e.target.value;
+        }
     });
 
     document.querySelector('#tabela tbody').addEventListener('change', atualizarContador);

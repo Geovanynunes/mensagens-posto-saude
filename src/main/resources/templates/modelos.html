@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modelos de mensagem</title>
+</head>
+<body>
+<h1>Modelos de mensagem</h1>
+<a th:href="@{/mensagens}">Enviar mensagem</a> |
+<a th:href="@{/pacientes}">Pacientes</a>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Sair</button>
+</form>
+
+<h2>Novo modelo</h2>
+<form th:action="@{/modelos}" th:object="${modelo}" method="post">
+    <input type="text" th:field="*{titulo}" maxlength="100" size="50"
+           placeholder="Título (ex.: Medicamento chegou)">
+    <br>
+    <textarea th:field="*{texto}" rows="4" cols="50" maxlength="1000"
+              placeholder="Olá, {nome}! Seu medicamento chegou no posto."></textarea>
+    <br>
+    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha o título e o texto.</div>
+    <button type="submit">Salvar modelo</button>
+</form>
+<p>Dica: escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+
+<h2>Modelos salvos</h2>
+<table border="1">
+    <tr><th>Título</th><th>Texto</th><th></th></tr>
+    <tr th:each="m : ${modelos}">
+        <td th:text="${m.titulo}"></td>
+        <td th:text="${m.texto}"></td>
+        <td>
+            <a th:href="@{/modelos/{id}/editar(id=${m.id})}">Editar</a>
+            <form th:action="@{/modelos/{id}/excluir(id=${m.id})}" method="post"
+                  style="display:inline" onsubmit="return confirm('Excluir este modelo?')">
+                <button type="submit">Excluir</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

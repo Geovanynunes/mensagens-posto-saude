@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar modelo</title>
+</head>
+<body>
+<h1>Editar modelo</h1>
+<a th:href="@{/modelos}">Voltar</a>
+
+<form th:action="@{/modelos/{id}(id=${id})}" th:object="${modelo}" method="post">
+    <input type="text" th:field="*{titulo}" maxlength="100" size="50">
+    <br>
+    <textarea th:field="*{texto}" rows="4" cols="50" maxlength="1000"></textarea>
+    <br>
+    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha o título e o texto.</div>
+    <button type="submit">Salvar alterações</button>
+</form>
+</body>
+</html>
