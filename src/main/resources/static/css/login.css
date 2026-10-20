@@ -1,0 +1,199 @@
+
+/* Configurações gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #edf7f1, #eaf4fb);
+    color: #344b43;
+    min-height: 100vh;
+}
+
+/* Centraliza o cartão */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+/* Cartão de login */
+.login-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 410px;
+    padding: 36px;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(52, 107, 84, 0.10);
+}
+
+/* Cabeçalho */
+.login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+/* Símbolo de saúde */
+.login-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 16px;
+
+    border-radius: 14px;
+    background-color: #e4f3e9;
+    color: #438765;
+
+    font-size: 36px;
+    font-weight: 400;
+}
+
+/* Título */
+.login-header h1 {
+    color: #356b54;
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+/* Subtítulo */
+.login-header p {
+    color: #7a8d83;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Mensagens */
+.mensagem {
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Mensagem de erro */
+.mensagem.erro {
+    color: #a33b3b;
+    background-color: #fff0f0;
+    border: 1px solid #f3d2d2;
+}
+
+/* Mensagem de sucesso */
+.mensagem.sucesso {
+    color: #347653;
+    background-color: #edf8f0;
+    border: 1px solid #d3ead9;
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Grupo de cada campo */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Rótulos */
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #435a4e;
+}
+
+/* Campos */
+.form-group input {
+    width: 100%;
+    padding: 13px 14px;
+
+    border: 1px solid #d8e5dd;
+    border-radius: 8px;
+
+    background-color: #fbfdfb;
+    color: #344b43;
+
+    font-size: 15px;
+    outline: none;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Campo selecionado */
+.form-group input:focus {
+    border-color: #73b394;
+    box-shadow: 0 0 0 3px rgba(115, 179, 148, 0.16);
+}
+
+/* Botão */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 2px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #438765;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #356f50;
+}
+
+button:focus-visible {
+    outline: 3px solid #a9d7bb;
+    outline-offset: 3px;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Rodapé do cartão */
+.login-footer {
+    margin-top: 25px;
+    padding-top: 18px;
+
+    border-top: 1px solid #edf1ee;
+
+    color: #84948b;
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Telas pequenas */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 16px;
+    }
+
+    .login-card {
+        padding: 28px 22px;
+    }
+
+    .login-header h1 {
+        font-size: 24px;
+    }
+}
