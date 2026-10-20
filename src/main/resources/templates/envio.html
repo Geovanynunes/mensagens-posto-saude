@@ -11,14 +11,45 @@
 <p th:text="${envio.texto}"></p>
 <p th:text="${#temporals.format(envio.dataHora, 'dd/MM/yyyy HH:mm')}"></p>
 
-<table border="1">
+<input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
+<select id="filtroStatus">
+    <option value="">Todos os status</option>
+    <option value="ENVIADO">Enviado</option>
+    <option value="FALHOU">Falhou</option>
+</select>
+
+<table border="1" id="tabela">
+    <thead>
     <tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Erro</th></tr>
-    <tr th:each="d : ${destinatarios}">
+    </thead>
+    <tbody>
+    <tr th:each="d : ${destinatarios}"
+        th:attr="data-busca=${#strings.toLowerCase(d.nome + ' ' + d.telefone)},data-status=${d.status}">
         <td th:text="${d.nome}"></td>
         <td th:text="${d.telefone}"></td>
         <td th:text="${d.status}"></td>
         <td th:text="${d.erro}"></td>
     </tr>
+    </tbody>
 </table>
+
+<script>
+    const busca = document.getElementById('busca');
+    const filtroStatus = document.getElementById('filtroStatus');
+
+    function filtrar() {
+        const termo = busca.value.toLowerCase().trim();
+        const status = filtroStatus.value;
+
+        document.querySelectorAll('#tabela tbody tr').forEach(tr => {
+            const okTexto = tr.dataset.busca.includes(termo);
+            const okStatus = !status || tr.dataset.status === status;
+            tr.style.display = (okTexto && okStatus) ? '' : 'none';
+        });
+    }
+
+    busca.addEventListener('input', filtrar);
+    filtroStatus.addEventListener('change', filtrar);
+</script>
 </body>
 </html>

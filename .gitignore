@@ -70,7 +70,7 @@ Thumbs.db
 desktop.ini
 
 ######################
-# Arquivos de pacientes (nunca versionar dados reais)
+# Arquivos de pacientes
 ######################
 *.csv
 !src/test/resources/*.csv
