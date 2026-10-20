@@ -17,11 +17,29 @@
     <button type="submit">Importar CSV</button>
 </form>
 
-<form th:action="@{/pacientes}" th:object="${paciente}" method="post">
-    <input type="text" th:field="*{nome}" placeholder="Nome">
-    <input type="text" th:field="*{telefone}" placeholder="Telefone com DDD">
+<form th:action="@{/pacientes}"
+      th:object="${paciente}"
+      method="post">
+
+    <input type="text"
+           th:field="*{nome}"
+           placeholder="Nome">
+
+    <div th:if="${#fields.hasErrors('nome')}"
+         th:errors="*{nome}"
+         style="color: red">
+    </div>
+
+    <input type="text"
+           th:field="*{telefone}"
+           placeholder="Telefone com DDD">
+
+    <div th:if="${#fields.hasErrors('telefone')}"
+         th:errors="*{telefone}"
+         style="color: red">
+    </div>
+
     <button type="submit">Salvar</button>
-    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha nome e telefone.</div>
 </form>
 
 <table border="1">

@@ -19,6 +19,7 @@ public class Paciente {
     private String nome;
 
     @NotBlank
+    @Column(unique = true)
     private String telefone;
 
     private boolean ativo = true;
