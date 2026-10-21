@@ -1,72 +1,125 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mensagens</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
-<h1>Enviar mensagem</h1>
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Sair</button>
-</form>
-<a th:href="@{/pacientes}">Pacientes</a>
-<a th:href="@{/modelos}">Modelos</a>
+<header th:replace="~{fragments/menu :: menu('mensagens')}"></header>
 
-<div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
-<div th:if="${erro}" th:text="${erro}" style="color:red"></div>
+<main class="conteudo">
+    <h1>Enviar mensagem</h1>
+    <p class="subtitulo">Escreva o aviso, escolha quem vai receber e envie.</p>
 
-<form th:action="@{/mensagens}" method="post">
-        <label>Usar modelo:
-            <select id="modelo">
-                <option value="">escolher...</option>
-                <option th:each="m : ${modelos}" th:value="${m.texto}" th:text="${m.titulo}"></option>
-            </select>
-        </label>
-        <br>
-        <textarea name="texto" id="texto" rows="4" cols="50" maxlength="1000"
-                  placeholder="Ex.: Olá, {nome}! Salve o telefone do posto de saúde na sua agenda."></textarea>
+    <div class="mensagem sucesso" th:if="${mensagem}" th:text="${mensagem}"></div>
+    <div class="mensagem erro" th:if="${erro}" th:text="${erro}"></div>
 
-    <h3>Destinatários</h3>
-    <input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
-    <label><input type="checkbox" id="todos"> Marcar todos os filtrados</label>
-    <span id="contador">0 selecionados</span>
+    <form th:action="@{/mensagens}" method="post" id="formEnvio">
 
-    <table border="1" id="tabela">
-        <thead><tr><th></th><th>Nome</th><th>Telefone</th></tr></thead>
-        <tbody>
-        <tr th:each="p : ${pacientes}"
-            th:attr="data-busca=${#strings.toLowerCase(p.nome + ' ' + p.telefone)}">
-            <td><input type="checkbox" name="ids" th:value="${p.id}"></td>
-            <td th:text="${p.nome}"></td>
-            <td th:text="${p.telefone}"></td>
-        </tr>
-        </tbody>
-    </table>
+        <section class="card">
+            <h2>1. Mensagem</h2>
 
-    <button type="submit">Enviar para os selecionados</button>
-</form>
+            <div class="form-group">
+                <label for="modelo">Usar um modelo salvo</label>
+                <select id="modelo">
+                    <option value="">Escolher...</option>
+                    <option th:each="m : ${modelos}" th:value="${m.texto}" th:text="${m.titulo}"></option>
+                </select>
+            </div>
 
-<h2>Histórico</h2>
-<table border="1">
-    <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
-    <tr th:each="e : ${envios}">
-        <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:text="${e.texto}"></td>
-        <td th:text="${e.totalDestinatarios}"></td>
-        <td th:text="${e.falhas}"></td>
-        <td><a th:href="@{/mensagens/{id}(id=${e.id})}">Detalhes</a></td>
-    </tr>
-</table>
+            <div class="form-group">
+                <label for="texto">Texto</label>
+                <textarea name="texto" id="texto" rows="4" maxlength="1000"
+                          placeholder="Ex.: Olá, {nome}! Salve o telefone do posto de saúde na sua agenda."></textarea>
+                <div class="contador-caracteres" id="caracteres">0/1000</div>
+                <p class="dica">Escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>2. Destinatários</h2>
+
+            <div class="barra">
+                <input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
+                <label><input type="checkbox" id="todos"> Marcar todos os filtrados</label>
+                <span class="contador" id="contador">0 selecionados</span>
+            </div>
+
+            <p class="vazio" th:if="${#lists.isEmpty(pacientes)}">
+                Nenhum paciente ativo. Cadastre pacientes na aba Pacientes.
+            </p>
+
+            <div class="tabela-rolavel" th:unless="${#lists.isEmpty(pacientes)}">
+                <table id="tabela">
+                    <thead>
+                    <tr><th></th><th>Nome</th><th>Telefone</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr class="clicavel" th:each="p : ${pacientes}"
+                        th:attr="data-busca=${#strings.toLowerCase(p.nome + ' ' + p.telefone)}">
+                        <td><input type="checkbox" name="ids" th:value="${p.id}"></td>
+                        <td th:text="${p.nome}"></td>
+                        <td th:text="${p.telefone}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <button type="submit" class="btn btn-primario" id="botaoEnviar">Enviar para os selecionados</button>
+    </form>
+
+    <section class="card" style="margin-top:28px">
+        <h2>Histórico de envios</h2>
+
+        <p class="vazio" th:if="${#lists.isEmpty(envios)}">Nenhuma mensagem enviada ainda.</p>
+
+        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(envios)}">
+            <table>
+                <thead>
+                <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${envios}">
+                    <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="texto" th:text="${e.texto}"></td>
+                    <td th:text="${e.totalDestinatarios}"></td>
+                    <td>
+                            <span th:class="${e.falhas > 0} ? 'badge badge-falhou' : 'badge badge-ok'"
+                                  th:text="${e.falhas}"></span>
+                    </td>
+                    <td><a class="link" th:href="@{/mensagens/{id}(id=${e.id})}">Detalhes</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
 <script>
     const busca = document.getElementById('busca');
     const todos = document.getElementById('todos');
     const contador = document.getElementById('contador');
+    const texto = document.getElementById('texto');
+    const caracteres = document.getElementById('caracteres');
+    const modelo = document.getElementById('modelo');
+    const form = document.getElementById('formEnvio');
     const linhas = () => document.querySelectorAll('#tabela tbody tr');
 
-    function atualizarContador() {
-        const n = document.querySelectorAll('#tabela tbody input:checked').length;
-        contador.textContent = n + ' selecionados';
+    function atualizarSelecao() {
+        let n = 0;
+        linhas().forEach(tr => {
+            const marcado = tr.querySelector('input').checked;
+            tr.classList.toggle('selecionada', marcado);
+            if (marcado) n++;
+        });
+        contador.textContent = n + (n === 1 ? ' selecionado' : ' selecionados');
+    }
+
+    function atualizarCaracteres() {
+        caracteres.textContent = texto.value.length + '/1000';
     }
 
     busca.addEventListener('input', () => {
@@ -82,16 +135,42 @@
                 tr.querySelector('input').checked = todos.checked;
             }
         });
-        atualizarContador();
+        atualizarSelecao();
     });
 
-    document.getElementById('modelo').addEventListener('change', e => {
+    // clicar em qualquer parte da linha marca/desmarca o paciente
+    const corpo = document.querySelector('#tabela tbody');
+    if (corpo) {
+        corpo.addEventListener('click', e => {
+            const tr = e.target.closest('tr');
+            if (!tr) return;
+            if (e.target.tagName !== 'INPUT') {
+                const caixa = tr.querySelector('input');
+                caixa.checked = !caixa.checked;
+            }
+            atualizarSelecao();
+        });
+    }
+
+    texto.addEventListener('input', atualizarCaracteres);
+
+    modelo.addEventListener('change', e => {
         if (e.target.value) {
-            document.getElementById('texto').value = e.target.value;
+            texto.value = e.target.value;
+            atualizarCaracteres();
         }
     });
 
-    document.querySelector('#tabela tbody').addEventListener('change', atualizarContador);
+    form.addEventListener('submit', e => {
+        const n = document.querySelectorAll('#tabela tbody input:checked').length;
+        if (n > 0 && !confirm('Enviar esta mensagem para ' + n + (n === 1 ? ' paciente?' : ' pacientes?'))) {
+            e.preventDefault();
+            return;
+        }
+        const botao = document.getElementById('botaoEnviar');
+        botao.disabled = true;
+        botao.textContent = 'Enviando...';
+    });
 </script>
 </body>
 </html>

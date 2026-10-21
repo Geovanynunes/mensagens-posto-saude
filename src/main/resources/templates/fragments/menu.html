@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="menu(ativo)" class="topo">
+    <div class="topo-conteudo">
+        <a class="marca" th:href="@{/pacientes}">
+            <span class="marca-icone" aria-hidden="true">+</span> ConectaSaúde
+        </a>
+        <nav>
+            <a th:href="@{/pacientes}" th:classappend="${ativo == 'pacientes'} ? 'ativo'">Pacientes</a>
+            <a th:href="@{/mensagens}" th:classappend="${ativo == 'mensagens'} ? 'ativo'">Mensagens</a>
+            <a th:href="@{/modelos}" th:classappend="${ativo == 'modelos'} ? 'ativo'">Modelos</a>
+        </nav>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-sair">Sair</button>
+        </form>
+    </div>
+</header>
+</body>
+</html>

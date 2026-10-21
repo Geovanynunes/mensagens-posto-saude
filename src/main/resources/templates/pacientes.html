@@ -1,58 +1,99 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Pacientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
-<h1>Pacientes</h1>
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Sair</button>
-</form>
-<a th:href="@{/mensagens}">Enviar mensagem</a>
-<div th:if="${mensagem}" th:text="${mensagem}" style="color:green"></div>
+<header th:replace="~{fragments/menu :: menu('pacientes')}"></header>
 
-<form th:action="@{/pacientes/importar}" method="post" enctype="multipart/form-data">
-    <input type="file" name="arquivo" accept=".csv" required>
-    <button type="submit">Importar CSV</button>
-</form>
+<main class="conteudo">
+    <h1>Pacientes</h1>
+    <p class="subtitulo">Cadastre pacientes um a um ou importe uma planilha CSV.</p>
 
-<form th:action="@{/pacientes}"
-      th:object="${paciente}"
-      method="post">
+    <div class="mensagem sucesso" th:if="${mensagem}" th:text="${mensagem}"></div>
+    <div class="mensagem erro" th:if="${erro}" th:text="${erro}"></div>
 
-    <input type="text"
-           th:field="*{nome}"
-           placeholder="Nome">
+    <div class="grid-2">
+        <section class="card">
+            <h2>Novo paciente</h2>
+            <form th:action="@{/pacientes}" th:object="${paciente}" method="post">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" th:field="*{nome}" placeholder="Nome completo">
+                    <div class="erro-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+                </div>
 
-    <div th:if="${#fields.hasErrors('nome')}"
-         th:errors="*{nome}"
-         style="color: red">
-    </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" th:field="*{telefone}" placeholder="(14) 99999-8888">
+                    <div class="erro-campo" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></div>
+                </div>
 
-    <input type="text"
-           th:field="*{telefone}"
-           placeholder="Telefone com DDD">
-
-    <div th:if="${#fields.hasErrors('telefone')}"
-         th:errors="*{telefone}"
-         style="color: red">
-    </div>
-
-    <button type="submit">Salvar</button>
-</form>
-
-<table border="1">
-    <tr><th>Nome</th><th>Telefone</th><th></th></tr>
-    <tr th:each="p : ${pacientes}">
-        <td th:text="${p.nome}"></td>
-        <td th:text="${p.telefone}"></td>
-        <td>
-            <form th:action="@{/pacientes/{id}/excluir(id=${p.id})}" method="post">
-                <button type="submit">Excluir</button>
+                <button type="submit" class="btn btn-primario">Salvar paciente</button>
             </form>
-        </td>
-    </tr>
-</table>
+        </section>
+
+        <section class="card">
+            <h2>Importar planilha</h2>
+            <form th:action="@{/pacientes/importar}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="arquivo">Arquivo CSV</label>
+                    <input type="file" id="arquivo" name="arquivo" accept=".csv" required>
+                    <p class="dica">Duas colunas: nome e telefone (com DDD), com cabeçalho na primeira linha. Duplicados e telefones inválidos são ignorados.</p>
+                </div>
+                <button type="submit" class="btn btn-primario">Importar CSV</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="card">
+        <div class="barra">
+            <h2 style="margin:0">Pacientes cadastrados</h2>
+            <span class="contador" th:text="${#lists.size(pacientes)} + ' no total'"></span>
+        </div>
+
+        <div class="barra">
+            <input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
+        </div>
+
+        <p class="vazio" th:if="${#lists.isEmpty(pacientes)}">
+            Nenhum paciente cadastrado ainda. Cadastre um acima ou importe uma planilha.
+        </p>
+
+        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(pacientes)}">
+            <table id="tabela">
+                <thead>
+                <tr><th>Nome</th><th>Telefone</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${pacientes}"
+                    th:attr="data-busca=${#strings.toLowerCase(p.nome + ' ' + p.telefone)}">
+                    <td th:text="${p.nome}"></td>
+                    <td th:text="${p.telefone}"></td>
+                    <td>
+                        <form th:action="@{/pacientes/{id}/excluir(id=${p.id})}" method="post"
+                              onsubmit="return confirm('Excluir este paciente?')">
+                            <button type="submit" class="btn btn-perigo">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script>
+    const busca = document.getElementById('busca');
+    busca.addEventListener('input', () => {
+        const termo = busca.value.toLowerCase().trim();
+        document.querySelectorAll('#tabela tbody tr').forEach(tr => {
+            tr.style.display = tr.dataset.busca.includes(termo) ? '' : 'none';
+        });
+    });
+</script>
 </body>
 </html>
