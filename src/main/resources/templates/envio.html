@@ -1,37 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Detalhes do envio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do envio | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
-<h1>Detalhes do envio</h1>
-<a th:href="@{/mensagens}">Voltar</a>
+<header th:replace="~{fragments/menu :: menu('mensagens')}"></header>
 
-<p th:text="${envio.texto}"></p>
-<p th:text="${#temporals.format(envio.dataHora, 'dd/MM/yyyy HH:mm')}"></p>
+<main class="conteudo">
+    <a class="link voltar" th:href="@{/mensagens}">← Voltar para as mensagens</a>
+    <h1>Detalhes do envio</h1>
+    <p class="subtitulo" th:text="'Enviado em ' + ${#temporals.format(envio.dataHora, 'dd/MM/yyyy HH:mm')}"></p>
 
-<input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
-<select id="filtroStatus">
-    <option value="">Todos os status</option>
-    <option value="ENVIADO">Enviado</option>
-    <option value="FALHOU">Falhou</option>
-</select>
+    <section class="card">
+        <h2>Mensagem</h2>
+        <p class="citacao" th:text="${envio.texto}"></p>
 
-<table border="1" id="tabela">
-    <thead>
-    <tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Erro</th></tr>
-    </thead>
-    <tbody>
-    <tr th:each="d : ${destinatarios}"
-        th:attr="data-busca=${#strings.toLowerCase(d.nome + ' ' + d.telefone)},data-status=${d.status}">
-        <td th:text="${d.nome}"></td>
-        <td th:text="${d.telefone}"></td>
-        <td th:text="${d.status}"></td>
-        <td th:text="${d.erro}"></td>
-    </tr>
-    </tbody>
-</table>
+        <div class="resumo">
+            <div class="resumo-item">
+                <strong th:text="${envio.totalDestinatarios}"></strong>
+                <span>destinatários</span>
+            </div>
+            <div class="resumo-item">
+                <strong th:text="${envio.totalDestinatarios - envio.falhas}"></strong>
+                <span>enviados</span>
+            </div>
+            <div class="resumo-item">
+                <strong th:text="${envio.falhas}"></strong>
+                <span>falhas</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Destinatários</h2>
+
+        <div class="barra">
+            <input type="text" id="busca" placeholder="Filtrar por nome ou telefone">
+            <select id="filtroStatus" style="width:auto">
+                <option value="">Todos os status</option>
+                <option value="ENVIADO">Enviado</option>
+                <option value="FALHOU">Falhou</option>
+            </select>
+        </div>
+
+        <p class="vazio" th:if="${#lists.isEmpty(destinatarios)}">Nenhum destinatário registrado.</p>
+
+        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(destinatarios)}">
+            <table id="tabela">
+                <thead>
+                <tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Erro</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${destinatarios}"
+                    th:attr="data-busca=${#strings.toLowerCase(d.nome + ' ' + d.telefone)},data-status=${d.status}">
+                    <td th:text="${d.nome}"></td>
+                    <td th:text="${d.telefone}"></td>
+                    <td>
+                            <span class="badge"
+                                  th:classappend="${d.status.name() == 'ENVIADO'} ? 'badge-enviado' : 'badge-falhou'"
+                                  th:text="${d.status.name() == 'ENVIADO'} ? 'Enviado' : 'Falhou'"></span>
+                    </td>
+                    <td th:text="${d.erro} ?: '—'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
 <script>
     const busca = document.getElementById('busca');

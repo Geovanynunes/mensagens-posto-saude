@@ -271,3 +271,23 @@ td.texto { overflow-wrap: anywhere; max-width: 420px; }
     .topo nav { order: 3; flex-basis: 100%; overflow-x: auto; }
     .grid-2 { grid-template-columns: 1fr; }
 }
+
+/* ---------- Extras (modelos e detalhes do envio) ---------- */
+.acoes-linha { display: flex; align-items: center; gap: 14px; }
+.acoes-linha form { margin: 0; }
+
+.citacao {
+    background: var(--fundo);
+    border-left: 4px solid var(--primaria);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    margin: 0 0 16px;
+    overflow-wrap: anywhere;
+}
+
+.resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.resumo-item { background: var(--fundo); border-radius: 10px; padding: 12px 16px; }
+.resumo-item strong { display: block; font-size: 1.5rem; }
+.resumo-item span { color: var(--texto-suave); font-size: .85rem; }
+
+.voltar { display: inline-block; margin-bottom: 14px; }

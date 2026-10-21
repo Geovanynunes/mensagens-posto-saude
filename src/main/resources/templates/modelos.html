@@ -1,45 +1,72 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Modelos de mensagem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
-<h1>Modelos de mensagem</h1>
-<a th:href="@{/mensagens}">Enviar mensagem</a> |
-<a th:href="@{/pacientes}">Pacientes</a>
+<header th:replace="~{fragments/menu :: menu('modelos')}"></header>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Sair</button>
-</form>
+<main class="conteudo">
+    <h1>Modelos de mensagem</h1>
+    <p class="subtitulo">Textos prontos para os avisos mais frequentes do posto.</p>
 
-<h2>Novo modelo</h2>
-<form th:action="@{/modelos}" th:object="${modelo}" method="post">
-    <input type="text" th:field="*{titulo}" maxlength="100" size="50"
-           placeholder="Título (ex.: Medicamento chegou)">
-    <br>
-    <textarea th:field="*{texto}" rows="4" cols="50" maxlength="1000"
-              placeholder="Olá, {nome}! Seu medicamento chegou no posto."></textarea>
-    <br>
-    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha o título e o texto.</div>
-    <button type="submit">Salvar modelo</button>
-</form>
-<p>Dica: escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+    <section class="card">
+        <h2>Novo modelo</h2>
+        <form th:action="@{/modelos}" th:object="${modelo}" method="post">
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" th:field="*{titulo}" maxlength="100"
+                       placeholder="Ex.: Medicamento chegou">
+            </div>
 
-<h2>Modelos salvos</h2>
-<table border="1">
-    <tr><th>Título</th><th>Texto</th><th></th></tr>
-    <tr th:each="m : ${modelos}">
-        <td th:text="${m.titulo}"></td>
-        <td th:text="${m.texto}"></td>
-        <td>
-            <a th:href="@{/modelos/{id}/editar(id=${m.id})}">Editar</a>
-            <form th:action="@{/modelos/{id}/excluir(id=${m.id})}" method="post"
-                  style="display:inline" onsubmit="return confirm('Excluir este modelo?')">
-                <button type="submit">Excluir</button>
-            </form>
-        </td>
-    </tr>
-</table>
+            <div class="form-group">
+                <label for="texto">Texto</label>
+                <textarea th:field="*{texto}" rows="4" maxlength="1000"
+                          placeholder="Olá, {nome}! Seu medicamento chegou no posto."></textarea>
+                <p class="dica">Escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+            </div>
+
+            <div class="mensagem erro" th:if="${#fields.hasErrors('*')}">
+                Preencha o título e o texto.
+            </div>
+
+            <button type="submit" class="btn btn-primario">Salvar modelo</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Modelos salvos</h2>
+
+        <p class="vazio" th:if="${#lists.isEmpty(modelos)}">
+            Nenhum modelo salvo ainda. Crie o primeiro acima.
+        </p>
+
+        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(modelos)}">
+            <table>
+                <thead>
+                <tr><th>Título</th><th>Texto</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${modelos}">
+                    <td th:text="${m.titulo}"></td>
+                    <td class="texto" th:text="${m.texto}"></td>
+                    <td>
+                        <div class="acoes-linha">
+                            <a class="link" th:href="@{/modelos/{id}/editar(id=${m.id})}">Editar</a>
+                            <form th:action="@{/modelos/{id}/excluir(id=${m.id})}" method="post"
+                                  onsubmit="return confirm('Excluir este modelo?')">
+                                <button type="submit" class="btn btn-perigo">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 </body>
 </html>

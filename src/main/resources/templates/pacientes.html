@@ -63,7 +63,7 @@
             Nenhum paciente cadastrado ainda. Cadastre um acima ou importe uma planilha.
         </p>
 
-        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(pacientes)}">
+        <div class="tabela-rolavel" th:unless="${#lists.isEmpty(pacientes)}">
             <table id="tabela">
                 <thead>
                 <tr><th>Nome</th><th>Telefone</th><th></th></tr>

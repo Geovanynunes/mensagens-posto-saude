@@ -1,20 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Editar modelo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar modelo | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
-<h1>Editar modelo</h1>
-<a th:href="@{/modelos}">Voltar</a>
+<header th:replace="~{fragments/menu :: menu('modelos')}"></header>
 
-<form th:action="@{/modelos/{id}(id=${id})}" th:object="${modelo}" method="post">
-    <input type="text" th:field="*{titulo}" maxlength="100" size="50">
-    <br>
-    <textarea th:field="*{texto}" rows="4" cols="50" maxlength="1000"></textarea>
-    <br>
-    <div th:if="${#fields.hasErrors('*')}" style="color:red">Preencha o título e o texto.</div>
-    <button type="submit">Salvar alterações</button>
-</form>
+<main class="conteudo">
+    <a class="link voltar" th:href="@{/modelos}">← Voltar para os modelos</a>
+    <h1>Editar modelo</h1>
+
+    <section class="card">
+        <form th:action="@{/modelos/{id}(id=${id})}" th:object="${modelo}" method="post">
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" th:field="*{titulo}" maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="texto">Texto</label>
+                <textarea th:field="*{texto}" rows="4" maxlength="1000"></textarea>
+                <p class="dica">Escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+            </div>
+
+            <div class="mensagem erro" th:if="${#fields.hasErrors('*')}">
+                Preencha o título e o texto.
+            </div>
+
+            <div class="acoes-linha">
+                <button type="submit" class="btn btn-primario">Salvar alterações</button>
+                <a class="link" th:href="@{/modelos}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
 </body>
 </html>
