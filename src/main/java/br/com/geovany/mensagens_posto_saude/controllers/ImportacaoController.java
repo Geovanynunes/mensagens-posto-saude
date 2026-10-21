@@ -4,6 +4,7 @@ package br.com.geovany.mensagens_posto_saude.controllers;
 import br.com.geovany.mensagens_posto_saude.entities.Paciente;
 import br.com.geovany.mensagens_posto_saude.repository.PacienteRepository;
 import br.com.geovany.mensagens_posto_saude.service.PacienteService;
+import br.com.geovany.mensagens_posto_saude.service.TelefoneDuplicadoException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,16 +74,11 @@ public class ImportacaoController {
 
                 try {
                     pacienteService.validarEPadronizar(paciente);
-
+                } catch (TelefoneDuplicadoException e) {
+                    duplicados++;
+                    continue;
                 } catch (IllegalArgumentException e) {
-
-                    if (e.getMessage() != null
-                            && e.getMessage().contains("Já existe")) {
-                        duplicados++;
-                    } else {
-                        invalidos++;
-                    }
-
+                    invalidos++;
                     continue;
                 }
 

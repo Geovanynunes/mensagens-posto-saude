@@ -30,35 +30,33 @@ public class PacienteService {
         }
 
         if (pacienteRepository.existsByTelefone(telefone)) {
-            throw new IllegalArgumentException(
-                    "Já existe um paciente cadastrado com esse telefone."
-            );
+            throw new TelefoneDuplicadoException("Já existe um paciente cadastrado com esse telefone.");
         }
 
         paciente.setTelefone(telefone);
     }
 
-    private String normalizarTelefone(String telefoneOriginal) {
-
-        if (telefoneOriginal == null) {
+    private String normalizarTelefone(String original) {
+        if (original == null) {
             return null;
         }
 
-        String telefone = telefoneOriginal.replaceAll("\\D", "");
+        String digitos = original.replaceAll("\\D", "").replaceFirst("^0+", "");
 
-        if (telefone.startsWith("00")) {
-            telefone = telefone.substring(2);
+        if (digitos.length() == 10 || digitos.length() == 11) {
+            digitos = "55" + digitos;
         }
 
-        if (telefone.startsWith("55")) {
-            telefone = telefone.substring(2);
-        }
-
-        if (telefone.length() != 10 && telefone.length() != 11) {
+        if (!digitos.startsWith("55") || (digitos.length() != 12 && digitos.length() != 13)) {
             return null;
         }
 
-        return "55" + telefone;
+        int ddd = Integer.parseInt(digitos.substring(2, 4));
+        if (ddd < 11) {
+            return null;
+        }
+
+        return digitos;
     }
 
     @Transactional

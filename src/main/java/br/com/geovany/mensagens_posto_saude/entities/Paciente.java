@@ -15,10 +15,10 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Informe o nome.")
     private String nome;
 
-    @NotBlank
+    @NotBlank(message = "Informe o telefone.")
     @Column(unique = true)
     private String telefone;
 
