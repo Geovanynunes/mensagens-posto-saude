@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do envio | ConectaSaúde</title>
     <link rel="stylesheet" th:href="@{/css/estilo.css}">
+    <meta http-equiv="refresh" content="3" th:if="${envio.situacao.name() == 'ENVIANDO'}">
 </head>
 <body>
 <header th:replace="~{fragments/menu :: menu('mensagens')}"></header>
@@ -24,12 +25,16 @@
                 <span>destinatários</span>
             </div>
             <div class="resumo-item">
-                <strong th:text="${envio.totalDestinatarios - envio.falhas}"></strong>
+                <strong th:text="${envio.processados - envio.falhas}"></strong>
                 <span>enviados</span>
             </div>
             <div class="resumo-item">
                 <strong th:text="${envio.falhas}"></strong>
                 <span>falhas</span>
+            </div>
+            <div class="resumo-item">
+                <strong th:text="${envio.totalDestinatarios - envio.processados}"></strong>
+                <span>pendentes</span>
             </div>
         </div>
     </section>
@@ -43,6 +48,7 @@
                 <option value="">Todos os status</option>
                 <option value="ENVIADO">Enviado</option>
                 <option value="FALHOU">Falhou</option>
+                <option value="PENDENTE">Pendente</option>
             </select>
         </div>
 
@@ -60,8 +66,8 @@
                     <td th:text="${d.telefone}"></td>
                     <td>
                             <span class="badge"
-                                  th:classappend="${d.status.name() == 'ENVIADO'} ? 'badge-enviado' : 'badge-falhou'"
-                                  th:text="${d.status.name() == 'ENVIADO'} ? 'Enviado' : 'Falhou'"></span>
+                                  th:classappend="${d.status.name() == 'ENVIADO'} ? 'badge-enviado' : (${d.status.name() == 'FALHOU'} ? 'badge-falhou' : 'badge-andamento')"
+                                  th:text="${d.status.name() == 'ENVIADO'} ? 'Enviado' : (${d.status.name() == 'FALHOU'} ? 'Falhou' : 'Pendente')"></span>
                     </td>
                     <td th:text="${d.erro} ?: '—'"></td>
                 </tr>

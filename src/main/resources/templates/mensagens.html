@@ -71,7 +71,8 @@
         <button type="submit" class="btn btn-primario" id="botaoEnviar">Enviar para os selecionados</button>
     </form>
 
-    <section class="card" style="margin-top:28px">
+    <section class="card" id="historico" style="margin-top:28px"
+             th:attr="data-em-andamento=${emAndamento}">
         <h2>Histórico de envios</h2>
 
         <p class="vazio" th:if="${#lists.isEmpty(envios)}">Nenhuma mensagem enviada ainda.</p>
@@ -79,12 +80,18 @@
         <div class="tabela-wrapper" th:unless="${#lists.isEmpty(envios)}">
             <table>
                 <thead>
-                <tr><th>Data</th><th>Mensagem</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
+                <tr><th>Data</th><th>Mensagem</th><th>Situação</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
                 </thead>
                 <tbody>
                 <tr th:each="e : ${envios}">
                     <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
                     <td class="texto" th:text="${e.texto}"></td>
+                    <td>
+                            <span class="badge badge-andamento" th:if="${e.situacao.name() == 'ENVIANDO'}"
+                                  th:text="'Enviando ' + ${e.processados} + '/' + ${e.totalDestinatarios}"></span>
+                        <span class="badge badge-ok" th:if="${e.situacao.name() == 'CONCLUIDO'}">Concluído</span>
+                        <span class="badge badge-falhou" th:if="${e.situacao.name() == 'INTERROMPIDO'}">Interrompido</span>
+                    </td>
                     <td th:text="${e.totalDestinatarios}"></td>
                     <td>
                             <span th:class="${e.falhas > 0} ? 'badge badge-falhou' : 'badge badge-ok'"
@@ -169,8 +176,27 @@
         }
         const botao = document.getElementById('botaoEnviar');
         botao.disabled = true;
-        botao.textContent = 'Enviando...';
+        botao.textContent = 'Iniciando...';
     });
+
+    // Enquanto houver envio em andamento, atualiza só o histórico a cada 3 segundos
+    const historico = document.getElementById('historico');
+    if (historico && historico.dataset.emAndamento === 'true') {
+        const timer = setInterval(async () => {
+            try {
+                const resp = await fetch(window.location.pathname);
+                if (!resp.ok) return;
+                const doc = new DOMParser().parseFromString(await resp.text(), 'text/html');
+                const novo = doc.getElementById('historico');
+                if (!novo) return;
+                historico.innerHTML = novo.innerHTML;
+                historico.dataset.emAndamento = novo.dataset.emAndamento;
+                if (novo.dataset.emAndamento !== 'true') clearInterval(timer);
+            } catch (e) {
+
+            }
+        }, 3000);
+    }
 </script>
 </body>
 </html>

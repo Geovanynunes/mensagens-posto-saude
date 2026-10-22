@@ -1,6 +1,7 @@
 package br.com.geovany.mensagens_posto_saude.controllers;
 
 import br.com.geovany.mensagens_posto_saude.entities.Envio;
+import br.com.geovany.mensagens_posto_saude.enums.SituacaoEnvio;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioDestinatarioRepository;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioRepository;
 import br.com.geovany.mensagens_posto_saude.repository.ModeloMensagemRepository;
@@ -35,9 +36,12 @@ public class EnvioController {
 
     @GetMapping
     public String tela(Model model) {
+        List<Envio> envios = repository.findAllByOrderByDataHoraDesc();
         model.addAttribute("pacientes", pacienteRepository.findByAtivoTrueOrderByNomeAsc());
-        model.addAttribute("envios", repository.findAllByOrderByDataHoraDesc());
         model.addAttribute("modelos", modeloMensagemRepository.findAllByOrderByTituloAsc());
+        model.addAttribute("envios", envios);
+        model.addAttribute("emAndamento",
+                envios.stream().anyMatch(e -> e.getSituacao() == SituacaoEnvio.ENVIANDO));
         return "mensagens";
     }
 
@@ -50,12 +54,11 @@ public class EnvioController {
         } else if (ids == null || ids.isEmpty()) {
             redirect.addFlashAttribute("erro", "Selecione pelo menos um paciente.");
         } else {
-            Envio envio = service.enviarParaSelecionados(ids, texto.trim());
-            int falhas = envio.getFalhas();
-            int ok = envio.getTotalDestinatarios() - falhas;
-            redirect.addFlashAttribute("mensagem", ok + " enviadas.");
-            if (falhas > 0) {
-                redirect.addFlashAttribute("erro", falhas + " falharam. Veja os detalhes no histórico.");
+            try {
+                service.iniciar(ids, texto.trim());
+                redirect.addFlashAttribute("mensagem", "Envio iniciado. Acompanhe o andamento no histórico.");
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                redirect.addFlashAttribute("erro", e.getMessage());
             }
         }
         return "redirect:/mensagens";

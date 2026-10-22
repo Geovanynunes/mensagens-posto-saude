@@ -5,6 +5,8 @@ import br.com.geovany.mensagens_posto_saude.repository.PacienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 public class PacienteService {
 
@@ -12,6 +14,24 @@ public class PacienteService {
 
     public PacienteService(PacienteRepository pacienteRepository) {
         this.pacienteRepository = pacienteRepository;
+    }
+
+    private static final Set<String> PARTICULAS = Set.of("da", "de", "di", "do", "du", "das", "dos", "e");
+
+    private String padronizarNome(String nome) {
+        String[] palavras = nome.trim().toLowerCase().split("\\s+");
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = 0; i < palavras.length; i++) {
+            String palavra = palavras[i];
+            if (i > 0 && PARTICULAS.contains(palavra)) {
+                resultado.append(palavra);
+            } else {
+                resultado.append(Character.toUpperCase(palavra.charAt(0))).append(palavra.substring(1));
+            }
+            if (i < palavras.length - 1) resultado.append(' ');
+        }
+        return resultado.toString();
     }
 
     public void validarEPadronizar(Paciente paciente) {
@@ -33,6 +53,7 @@ public class PacienteService {
             throw new TelefoneDuplicadoException("Já existe um paciente cadastrado com esse telefone.");
         }
 
+        paciente.setNome(padronizarNome(paciente.getNome()));
         paciente.setTelefone(telefone);
     }
 

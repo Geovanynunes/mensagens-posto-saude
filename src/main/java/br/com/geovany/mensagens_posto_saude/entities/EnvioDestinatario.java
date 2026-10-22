@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 public class EnvioDestinatario {
 
     @Id
@@ -29,10 +29,14 @@ public class EnvioDestinatario {
     @Column(length = 500)
     private String erro;
 
-    public EnvioDestinatario(Envio envio, Paciente paciente, ResultadoEnvio resultado) {
+    public EnvioDestinatario(Envio envio, Paciente paciente) {
         this.envio = envio;
         this.nome = paciente.getNome();
         this.telefone = paciente.getTelefone();
+        this.status = StatusEnvio.PENDENTE;
+    }
+
+    public void registrarResultado(ResultadoEnvio resultado) {
         this.status = resultado.sucesso() ? StatusEnvio.ENVIADO : StatusEnvio.FALHOU;
         String msg = resultado.erro();
         this.erro = (msg != null && msg.length() > 500) ? msg.substring(0, 500) : msg;
