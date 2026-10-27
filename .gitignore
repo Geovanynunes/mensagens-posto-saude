@@ -51,6 +51,7 @@ src/main/resources/local.properties
 .env*
 application-local.properties
 application-local.yml
+evolution-backup.dump
 
 ######################
 # Dados e logs

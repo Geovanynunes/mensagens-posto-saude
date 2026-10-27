@@ -1,0 +1,102 @@
+
+services:
+  app:
+    build: .
+    container_name: mensagens-posto-saude
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      ADMIN_USUARIO: ${ADMIN_USUARIO}
+      ADMIN_SENHA: ${ADMIN_SENHA}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://app-db:5432/postoteste
+      SPRING_DATASOURCE_USERNAME: ${APP_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${APP_DB_PASSWORD}
+      MENSAGEM_SENDER: evolution
+      MENSAGEM_INTERVALO_MS: 2000
+      EVOLUTION_API_URL: http://evolution-api:8080
+      EVOLUTION_API_INSTANCE: Sistema
+      EVOLUTION_API_KEY: ${EVOLUTION_API_KEY}
+    depends_on:
+      app-db:
+        condition: service_healthy
+      evolution-api:
+        condition: service_started
+    networks:
+      - sistema
+
+  app-db:
+    image: postgres:15-alpine
+    container_name: mensagens-posto-saude-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postoteste
+      POSTGRES_USER: ${APP_DB_USER}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+    volumes:
+      - app_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sistema
+
+  evolution-api:
+    image: evoapicloud/evolution-api:v2.3.0
+    container_name: evolution_api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8080"
+    env_file:
+      - ./evolution-api/.env
+    volumes:
+      - evolution_instances:/evolution/instances
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_started
+    networks:
+      - sistema
+
+  redis:
+    image: redis:7-alpine
+    container_name: evolution_redis
+    restart: unless-stopped
+    volumes:
+      - evolution_redis:/data
+    networks:
+      - sistema
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: evolution_postgres
+    restart: unless-stopped
+    env_file:
+      - ./evolution-api/.env
+    environment:
+      POSTGRES_DB: evolution
+      POSTGRES_USER: evolution
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sistema
+
+networks:
+  sistema:
+    driver: bridge
+
+volumes:
+  app_db_data:
+  evolution_instances:
+    external: true
+    name: evolution-api_evolution_instances
+  evolution_redis:
+    external: true
+    name: evolution-api_evolution_redis
+  postgres_data:
+    external: true
+    name: evolution-api_postgres_data

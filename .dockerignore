@@ -1,0 +1,17 @@
+.git
+.gitignore
+.idea/
+.vscode/
+
+target/
+build/
+out/
+
+.env
+.env.*
+*.env
+
+src/main/resources/local.properties
+
+*.log
+logs/
