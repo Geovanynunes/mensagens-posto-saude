@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro | ConectaSaúde</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<main class="login-container">
+    <section class="login-card" style="text-align:center">
+        <div class="login-icon" aria-hidden="true">!</div>
+        <h1 th:text="${status == 404} ? 'Página não encontrada' : 'Algo deu errado'">Algo deu errado</h1>
+        <p class="subtitulo">
+            <span th:if="${status == 404}">O endereço que você tentou abrir não existe.</span>
+            <span th:unless="${status == 404}">Tivemos um problema inesperado. Tente novamente em instantes.</span>
+        </p>
+        <a class="btn btn-primario btn-bloco" th:href="@{/pacientes}">Voltar ao início</a>
+    </section>
+</main>
+</body>
+</html>
