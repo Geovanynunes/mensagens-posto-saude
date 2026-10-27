@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class UsuarioDetailsService implements UserDetailsService {
 
     private final UsuarioRepository repository;
+    private final LoginAttemptService tentativas;
 
-    public UsuarioDetailsService(UsuarioRepository repository) {
+    public UsuarioDetailsService(UsuarioRepository repository, LoginAttemptService tentativas) {
         this.repository = repository;
+        this.tentativas = tentativas;
     }
 
     @Override
@@ -26,6 +28,7 @@ public class UsuarioDetailsService implements UserDetailsService {
                 .password(u.getSenha())
                 .roles("ADMIN")
                 .disabled(!u.isAtivo())
+                .accountLocked(tentativas.estaBloqueado(u.getUsername()))
                 .build();
     }
 }
