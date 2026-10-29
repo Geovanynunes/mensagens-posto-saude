@@ -1,11 +1,10 @@
-
 services:
   app:
     build: .
     container_name: mensagens-posto-saude
     restart: unless-stopped
     ports:
-      - "8082:8082"
+      - "127.0.0.1:8082:8082"
     environment:
       PORT: 8082
       ADMIN_USUARIO: ${ADMIN_USUARIO}
@@ -92,11 +91,5 @@ networks:
 volumes:
   app_db_data:
   evolution_instances:
-    external: true
-    name: evolution-api_evolution_instances
   evolution_redis:
-    external: true
-    name: evolution-api_evolution_redis
   postgres_data:
-    external: true
-    name: evolution-api_postgres_data
