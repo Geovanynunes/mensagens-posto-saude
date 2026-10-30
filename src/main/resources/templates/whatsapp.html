@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta th:name="${_csrf.parameterName}"
+          th:content="${_csrf.token}">
+
+    <meta th:name="'_csrf_header'"
+          th:content="${_csrf.headerName}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Conexão WhatsApp</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+
+<div th:replace="~{fragments/menu :: menu('whatsapp')}"></div>
+
+<main class="conteudo">
+
+    <div class="whatsapp-cabecalho">
+        <div>
+            <h1>Conexão com WhatsApp</h1>
+            <p class="subtitulo">
+                Gerencie a conexão do WhatsApp utilizado pelo posto de saúde.
+            </p>
+        </div>
+    </div>
+
+    <section class="whatsapp-card">
+
+        <div class="whatsapp-card-topo">
+            <div class="whatsapp-icone">
+                <span>W</span>
+            </div>
+
+            <div>
+                <h2>WhatsApp do posto</h2>
+                <p>Conexão para envio de mensagens aos pacientes</p>
+            </div>
+        </div>
+
+        <div class="whatsapp-status-area">
+            <span class="status-indicador" id="indicadorStatus"></span>
+
+            <span id="estadoConexao"
+                  class="whatsapp-status"
+                  th:text="${estadoConexao == 'open' ? 'WhatsApp conectado' :
+                    (estadoConexao == 'connecting' ? 'Aguardando leitura do QR Code' :
+                    'WhatsApp desconectado')}">
+            </span>
+        </div>
+
+        <div class="whatsapp-conteudo">
+
+            <div class="whatsapp-instrucoes">
+
+                <h3>Conecte seu dispositivo</h3>
+
+                <p>
+                    Para conectar o WhatsApp do posto, siga as instruções
+                    abaixo utilizando o celular que possui o número do posto.
+                </p>
+
+                <ol class="whatsapp-passos">
+                    <li>
+                        Abra o WhatsApp no celular.
+                    </li>
+                    <li>
+                        Acesse o menu e selecione
+                        <strong>Dispositivos conectados</strong>.
+                    </li>
+                    <li>
+                        Toque em <strong>Conectar dispositivo</strong>.
+                    </li>
+                    <li>
+                        Aponte a câmera para o QR Code.
+                    </li>
+                </ol>
+
+                <div class="whatsapp-observacao">
+                    <strong>Importante:</strong>
+                    mantenha o celular conectado à internet durante o processo.
+                </div>
+
+            </div>
+
+            <div class="whatsapp-qrcode-area" id="areaQrCode"
+                 th:style="${estadoConexao == 'connecting'} ? 'display: flex;' : 'display: none;'">
+
+                <h3>Leia o QR Code</h3>
+
+                <div class="qrcode-container">
+                    <img id="imagemQrCode"
+                         th:src="${qrCode != null ? qrCode.base64() : ''}"
+                         alt="QR Code para conectar o WhatsApp">
+                </div>
+
+                <p id="mensagemQrCode" class="qrcode-legenda"
+                   th:style="${qrCode != null and qrCode.base64() != null} ? 'display: none;' : 'display: block;'">
+                    Gere um QR Code para iniciar a conexão.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="whatsapp-acoes">
+
+            <button type="button"
+                    id="btnGerarQrCode"
+                    class="btn btn-primario"
+                    onclick="gerarQrCode()">
+                Gerar QR Code
+            </button>
+
+            <button type="button"
+                    id="btnDesconectar"
+                    class="btn btn-desconectar"
+                    onclick="desconectarWhatsApp()"
+                    style="display: none;">
+                Desconectar WhatsApp
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+    async function gerarQrCode() {
+        const botao = document.getElementById('btnGerarQrCode');
+
+        try {
+            botao.disabled = true;
+            botao.textContent = 'Gerando QR Code...';
+
+            const resposta = await fetch('/whatsapp/qrcode/gerar');
+
+            if (!resposta.ok) {
+                throw new Error('Não foi possível gerar o QR Code.');
+            }
+
+            const dados = await resposta.json();
+
+            if (!dados.base64) {
+                throw new Error('A Evolution API não retornou a imagem do QR Code.');
+            }
+
+            document.getElementById('imagemQrCode').src = dados.base64;
+            document.getElementById('mensagemQrCode').style.display = 'none';
+            document.getElementById('areaQrCode').style.display = 'flex';
+
+            await atualizarStatus();
+
+        } catch (erro) {
+            console.error('Erro ao gerar QR Code:', erro);
+            alert(erro.message);
+
+        } finally {
+            botao.disabled = false;
+            botao.textContent = 'Gerar novo QR Code';
+        }
+    }
+
+    async function atualizarStatus() {
+        try {
+            const resposta = await fetch('/whatsapp/status');
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao consultar o estado da conexão.');
+            }
+
+            const dados = await resposta.json();
+            const estado = dados.instance.state;
+
+            const status = document.getElementById('estadoConexao');
+            const indicador = document.getElementById('indicadorStatus');
+            const btnGerarQrCode = document.getElementById('btnGerarQrCode');
+            const btnDesconectar = document.getElementById('btnDesconectar');
+            const areaQrCode = document.getElementById('areaQrCode');
+
+            if (estado === 'open') {
+                status.textContent = 'WhatsApp conectado';
+                status.className = 'whatsapp-status conectado';
+                indicador.className = 'status-indicador conectado';
+
+                btnGerarQrCode.style.display = 'none';
+                btnDesconectar.style.display = 'inline-block';
+                areaQrCode.style.display = 'none';
+
+            } else if (estado === 'connecting') {
+                status.textContent = 'Aguardando leitura do QR Code';
+                status.className = 'whatsapp-status conectando';
+                indicador.className = 'status-indicador conectando';
+
+                btnGerarQrCode.style.display = 'inline-block';
+                btnGerarQrCode.textContent = 'Gerar novo QR Code';
+                btnDesconectar.style.display = 'none';
+
+            } else {
+                status.textContent = 'WhatsApp desconectado';
+                status.className = 'whatsapp-status desconectado';
+                indicador.className = 'status-indicador desconectado';
+
+                btnGerarQrCode.style.display = 'inline-block';
+                btnGerarQrCode.textContent = 'Gerar QR Code';
+                btnDesconectar.style.display = 'none';
+                areaQrCode.style.display = 'none';
+            }
+
+        } catch (erro) {
+            console.error('Erro ao consultar conexão:', erro);
+        }
+    }
+
+    async function desconectarWhatsApp() {
+        const confirmar = confirm(
+            'Tem certeza que deseja desconectar o WhatsApp do posto?'
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            const resposta = await fetch('/whatsapp/desconectar', {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            });
+
+            if (!resposta.ok) {
+                throw new Error('Não foi possível desconectar o WhatsApp.');
+            }
+
+            document.getElementById('areaQrCode').style.display = 'none';
+            document.getElementById('imagemQrCode').src = '';
+
+            alert('WhatsApp desconectado com sucesso!');
+
+            await atualizarStatus();
+
+        } catch (erro) {
+            console.error('Erro ao desconectar:', erro);
+            alert(erro.message);
+        }
+    }
+
+    atualizarStatus();
+    setInterval(atualizarStatus, 5000);
+
+</script>
+
+</body>
+</html>
