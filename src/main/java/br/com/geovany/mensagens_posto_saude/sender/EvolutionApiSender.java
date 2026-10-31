@@ -51,14 +51,27 @@ public class EvolutionApiSender implements MensagemSender {
 
         } catch (RestClientResponseException e) {
             String corpo = e.getResponseBodyAsString();
-            if (corpo.length() > 200) corpo = corpo.substring(0, 200);
-            return ResultadoEnvio.falha("Evolution respondeu " + e.getStatusCode().value() + ": " + corpo);
+
+            if (corpo.toLowerCase().contains("connection closed")) {
+                return ResultadoEnvio.falha(
+                        "WhatsApp desconectado. Conecte novamente o WhatsApp para realizar o envio."
+                );
+            }
+
+            return ResultadoEnvio.falha(
+                    "Não foi possível enviar a mensagem. Erro na comunicação com o WhatsApp."
+            );
 
         } catch (ResourceAccessException e) {
-            return ResultadoEnvio.falha("Evolution API fora do ar ou sem resposta. Confira se o Docker está rodando.");
+            return ResultadoEnvio.falha(
+                    "Evolution API fora do ar ou sem resposta. Confira a conexão."
+            );
 
         } catch (Exception e) {
-            return ResultadoEnvio.falha("Erro inesperado: " + e.getClass().getSimpleName());
+            return ResultadoEnvio.falha(
+                    "Erro inesperado: " + e.getClass().getSimpleName()
+            );
+            
         }
     }
 }
