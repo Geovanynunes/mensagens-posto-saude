@@ -6,12 +6,15 @@
         <a class="marca" th:href="@{/pacientes}">
             <span class="marca-icone" aria-hidden="true">+</span> ConectaSaúde
         </a>
+        
         <nav>
             <a th:href="@{/pacientes}" th:classappend="${ativo == 'pacientes'} ? 'ativo'">Pacientes</a>
             <a th:href="@{/mensagens}" th:classappend="${ativo == 'mensagens'} ? 'ativo'">Mensagens</a>
             <a th:href="@{/modelos}" th:classappend="${ativo == 'modelos'} ? 'ativo'">Modelos</a>
             <a th:href="@{/whatsapp/qrcode}" th:classappend="${ativo == 'whatsapp'} ? 'ativo'">WhatsApp</a>
+            <a th:href="@{/usuario/senha}" th:classappend="${ativo == 'usuario'} ? 'ativo'">Alterar senha</a>
         </nav>
+
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-sair">Sair</button>
         </form>

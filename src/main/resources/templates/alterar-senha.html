@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar senha</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+<div th:replace="~{fragments/menu :: menu('usuario')}"></div>
+<main class="conteudo">
+
+    <a th:href="@{/pacientes}" class="link voltar">
+        ← Voltar para pacientes
+    </a>
+
+    <h1>Alterar senha</h1>
+    <p class="subtitulo">Atualize sua senha de acesso ao sistema.</p>
+
+    <section class="card" style="max-width: 550px;">
+
+        <div th:if="${mensagem}" class="mensagem sucesso">
+            <p th:text="${mensagem}"></p>
+        </div>
+
+        <div th:if="${erro}" class="mensagem erro">
+            <p th:text="${erro}"></p>
+        </div>
+
+        <form th:action="@{/usuario/senha}" method="post">
+
+            <div class="form-group">
+                <label for="senhaAtual">Senha atual</label>
+                <input type="password"
+                       id="senhaAtual"
+                       name="senhaAtual"
+                       placeholder="Digite sua senha atual"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="novaSenha">Nova senha</label>
+                <input type="password"
+                       id="novaSenha"
+                       name="novaSenha"
+                       placeholder="Mínimo de 8 caracteres"
+                       minlength="8"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmarSenha">Confirmar nova senha</label>
+                <input type="password"
+                       id="confirmarSenha"
+                       name="confirmarSenha"
+                       placeholder="Digite novamente sua nova senha"
+                       minlength="8"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primario btn-bloco">
+                Salvar nova senha
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>
