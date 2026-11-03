@@ -11,7 +11,7 @@
 
 <main class="conteudo">
     <h1>Pacientes</h1>
-    <p class="subtitulo">Cadastre pacientes um a um ou importe uma planilha CSV.</p>
+    <p class="subtitulo">Cadastre pacientes um a um ou importe uma planilha.</p>
 
     <div class="mensagem sucesso" th:if="${mensagem}" th:text="${mensagem}"></div>
     <div class="mensagem erro" th:if="${erro}" th:text="${erro}"></div>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label for="arquivo">Arquivo CSV</label>
                     <input type="file" id="arquivo" name="arquivo" accept=".csv" required>
-                    <p class="dica">Duas colunas: nome e telefone (com DDD), com cabeçalho na primeira linha. Duplicados e telefones inválidos são ignorados.</p>
+                    <p class="dica">Duas colunas: nome e telefone (com DDD), com cabeçalho na primeira linha. Contatos duplicados e telefones inválidos são ignorados.</p>
                 </div>
                 <button type="submit" class="btn btn-primario">Importar CSV</button>
             </form>

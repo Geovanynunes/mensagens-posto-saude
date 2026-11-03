@@ -23,7 +23,7 @@ public class PacienteController {
     }
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("pacientes", pacienteRepository.findAll());
+        model.addAttribute("pacientes", pacienteRepository.findByAtivoTrueOrderByNomeAsc());
         model.addAttribute("paciente", new Paciente());
         return "pacientes";
     }
@@ -35,7 +35,7 @@ public class PacienteController {
             Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute("pacientes", pacienteRepository.findAll());
+            model.addAttribute("pacientes", pacienteRepository.findByAtivoTrueOrderByNomeAsc());
             return "pacientes";
         }
 
@@ -46,7 +46,7 @@ public class PacienteController {
         } catch (IllegalArgumentException e) {
             result.rejectValue("telefone", "telefone.invalido", e.getMessage());
 
-            model.addAttribute("pacientes", pacienteRepository.findAll());
+            model.addAttribute("pacientes", pacienteRepository.findByAtivoTrueOrderByNomeAsc());
             return "pacientes";
         }
     }
