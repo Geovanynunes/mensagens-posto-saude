@@ -35,6 +35,20 @@
                           placeholder="Ex.: Olá, {nome}! Salve o telefone do posto de saúde na sua agenda."></textarea>
                 <div class="contador-caracteres" id="caracteres">0/1000</div>
                 <p class="dica">Escreva <b>{nome}</b> onde o primeiro nome do paciente deve aparecer.</p>
+
+                <div class="form-group">
+                    <label for="tituloModelo">Nome do modelo</label>
+                    <input type="text"
+                           id="tituloModelo"
+                           maxlength="100"
+                           placeholder="Ex.: Aviso de encaminhamento">
+                </div>
+
+                <button type="button"
+                        class="btn"
+                        id="botaoSalvarModelo">
+                    Salvar como modelo
+                </button>
             </div>
         </section>
 
@@ -69,6 +83,16 @@
         </section>
 
         <button type="submit" class="btn btn-primario" id="botaoEnviar">Enviar para os selecionados</button>
+    </form>
+
+    <form th:action="@{/mensagens/salvar-modelo}"
+          method="post"
+          id="formSalvarModelo"
+          hidden>
+
+        <input type="hidden" name="titulo" id="tituloModeloForm">
+        <input type="hidden" name="texto" id="textoModeloForm">
+
     </form>
 
     <section class="card" id="historico" style="margin-top:28px"
@@ -208,7 +232,6 @@
         aplicarFiltroData();
     });
 
-    // Enquanto houver envio em andamento, atualiza só o histórico a cada 3 segundos
     const historico = document.getElementById('historico');
     if (historico && historico.dataset.emAndamento === 'true') {
         const timer = setInterval(async () => {
@@ -227,6 +250,39 @@
             }
         }, 3000);
     }
+
+    const tituloModelo = document.getElementById('tituloModelo');
+    const botaoSalvarModelo = document.getElementById('botaoSalvarModelo');
+
+    const formSalvarModelo = document.getElementById('formSalvarModelo');
+    const tituloModeloForm = document.getElementById('tituloModeloForm');
+    const textoModeloForm = document.getElementById('textoModeloForm');
+
+    botaoSalvarModelo.addEventListener('click', () => {
+        const titulo = tituloModelo.value.trim();
+        const mensagem = texto.value.trim();
+
+        if (!mensagem) {
+            alert('Escreva uma mensagem antes de salvar como modelo.');
+            texto.focus();
+            return;
+        }
+
+        if (!titulo) {
+            alert('Informe um nome para o modelo.');
+            tituloModelo.focus();
+            return;
+        }
+
+        tituloModeloForm.value = titulo;
+        textoModeloForm.value = mensagem;
+
+        botaoSalvarModelo.disabled = true;
+        botaoSalvarModelo.textContent = 'Salvando...';
+
+        formSalvarModelo.submit();
+    });
+
 </script>
 </body>
 </html>

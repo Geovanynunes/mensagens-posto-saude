@@ -23,7 +23,7 @@ public class ModeloMensagem {
     private String titulo;
 
     @NotBlank
-    @Column(length = 100)
+    @Column(length = 1000)
     @Size(min = 1, max = 1000)
     private String texto;
 }

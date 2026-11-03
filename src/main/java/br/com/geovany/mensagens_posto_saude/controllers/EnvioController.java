@@ -1,6 +1,7 @@
 package br.com.geovany.mensagens_posto_saude.controllers;
 
 import br.com.geovany.mensagens_posto_saude.entities.Envio;
+import br.com.geovany.mensagens_posto_saude.entities.ModeloMensagem;
 import br.com.geovany.mensagens_posto_saude.enums.SituacaoEnvio;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioDestinatarioRepository;
 import br.com.geovany.mensagens_posto_saude.repository.EnvioRepository;
@@ -71,5 +72,32 @@ public class EnvioController {
         model.addAttribute("envio", envio);
         model.addAttribute("destinatarios", envioDestinatarioRepository.findByEnvioIdOrderByNomeAsc(id));
         return "envio";
+    }
+
+    @PostMapping("/salvar-modelo")
+    public String salvarModelo(
+            @RequestParam String titulo,
+            @RequestParam String texto,
+            RedirectAttributes redirect) {
+
+        if (titulo.isBlank() || texto.isBlank()) {
+            redirect.addFlashAttribute("erro", "Informe o título e o texto da mensagem.");
+            return "redirect:/mensagens";
+        }
+
+        if (titulo.length() > 100 || texto.length() > 1000) {
+            redirect.addFlashAttribute("erro", "O título deve ter até 100 caracteres e o texto até 1000.");
+            return "redirect:/mensagens";
+        }
+
+        ModeloMensagem modelo = new ModeloMensagem();
+        modelo.setTitulo(titulo.trim());
+        modelo.setTexto(texto.trim());
+
+        modeloMensagemRepository.save(modelo);
+
+        redirect.addFlashAttribute("mensagem", "Modelo salvo com sucesso!");
+
+        return "redirect:/mensagens";
     }
 }
