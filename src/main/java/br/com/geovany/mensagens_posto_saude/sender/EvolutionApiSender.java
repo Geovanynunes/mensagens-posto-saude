@@ -22,7 +22,7 @@ public class EvolutionApiSender implements MensagemSender {
     public EvolutionApiSender(
             @Value("${evolution.api.url:http://localhost:8081}") String baseUrl,
             @Value("${evolution.api.key}") String apiKey,
-            @Value("${evolution.api.instance:posto-teste}") String instance) {
+            @Value("${evolution.api.instance:Sistema}") String instance) {
 
         this.instance = instance;
 

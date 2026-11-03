@@ -44,7 +44,7 @@ services:
       - sistema
 
   evolution-api:
-    image: evoapicloud/evolution-api:v2.3.0
+    image: evoapicloud/evolution-api:v2.3.7
     container_name: evolution_api
     restart: unless-stopped
     ports:
