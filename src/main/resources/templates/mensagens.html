@@ -77,7 +77,7 @@
 
         <p class="vazio" th:if="${#lists.isEmpty(envios)}">Nenhuma mensagem enviada ainda.</p>
 
-        <div class="tabela-wrapper" th:unless="${#lists.isEmpty(envios)}">
+        <div class="tabela-rolavel" th:unless="${#lists.isEmpty(envios)}">
             <table>
                 <thead>
                 <tr><th>Data</th><th>Mensagem</th><th>Situação</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
