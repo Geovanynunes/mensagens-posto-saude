@@ -75,6 +75,13 @@
              th:attr="data-em-andamento=${emAndamento}">
         <h2>Histórico de envios</h2>
 
+        <div class="filtro-data">
+            <label for="filtroData">Filtrar por data:</label>
+            <input type="date" id="filtroData">
+
+            <button type="button" id="limparFiltro">Limpar</button>
+        </div>
+
         <p class="vazio" th:if="${#lists.isEmpty(envios)}">Nenhuma mensagem enviada ainda.</p>
 
         <div class="tabela-rolavel" th:unless="${#lists.isEmpty(envios)}">
@@ -83,7 +90,8 @@
                 <tr><th>Data</th><th>Mensagem</th><th>Situação</th><th>Destinatários</th><th>Falhas</th><th></th></tr>
                 </thead>
                 <tbody>
-                <tr th:each="e : ${envios}">
+                <tr th:each="e : ${envios}"
+                    th:attr="data-data=${#temporals.format(e.dataHora, 'yyyy-MM-dd')}">
                     <td th:text="${#temporals.format(e.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
                     <td class="texto" th:text="${e.texto}"></td>
                     <td>
@@ -179,6 +187,27 @@
         botao.textContent = 'Iniciando...';
     });
 
+    const filtroData = document.getElementById('filtroData');
+    const limparFiltro = document.getElementById('limparFiltro');
+
+    function aplicarFiltroData() {
+        const dataSelecionada = filtroData.value;
+
+        document.querySelectorAll('#historico tbody tr').forEach(tr => {
+            const dataEnvio = tr.dataset.data;
+
+            tr.style.display =
+                !dataSelecionada || dataEnvio === dataSelecionada ? '' : 'none';
+        });
+    }
+
+    filtroData.addEventListener('change', aplicarFiltroData);
+
+    limparFiltro.addEventListener('click', () => {
+        filtroData.value = '';
+        aplicarFiltroData();
+    });
+
     // Enquanto houver envio em andamento, atualiza só o histórico a cada 3 segundos
     const historico = document.getElementById('historico');
     if (historico && historico.dataset.emAndamento === 'true') {
@@ -191,6 +220,7 @@
                 if (!novo) return;
                 historico.innerHTML = novo.innerHTML;
                 historico.dataset.emAndamento = novo.dataset.emAndamento;
+                aplicarFiltroData();
                 if (novo.dataset.emAndamento !== 'true') clearInterval(timer);
             } catch (e) {
 

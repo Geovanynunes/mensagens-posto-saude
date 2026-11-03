@@ -497,3 +497,51 @@ td.texto { overflow-wrap: anywhere; max-width: 420px; }
         width: 100%;
     }
 }
+
+/* Filtro por data do histórico */
+.filtro-data {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0 20px;
+    flex-wrap: wrap;
+}
+
+.filtro-data label {
+    color: var(--texto);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.filtro-data input[type="date"] {
+    padding: 9px 12px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filtro-data input[type="date"]:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+}
+
+.filtro-data button {
+    padding: 9px 16px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background-color: #f5f9f7;
+    color: var(--texto);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filtro-data button:hover {
+    background-color: #e8f3ed;
+}
