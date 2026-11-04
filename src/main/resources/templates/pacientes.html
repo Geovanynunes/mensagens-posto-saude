@@ -40,12 +40,17 @@
             <h2>Importar planilha</h2>
             <form th:action="@{/pacientes/importar}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="arquivo">Arquivo CSV</label>
                     <input type="file" id="arquivo" name="arquivo" accept=".csv" required>
                     <p class="dica">Duas colunas: nome e telefone (com DDD), com cabeçalho na primeira linha. Contatos duplicados e telefones inválidos são ignorados.</p>
                 </div>
-                <button type="submit" class="btn btn-primario">Importar CSV</button>
+                <button type="submit" class="btn btn-primario">Importar planilha</button>
             </form>
+            <a th:href="@{/modelo-pacientes.csv}" download>
+                Baixar modelo de planilha (CSV)
+            </a>
+            <p class="dica">
+                Preencha a planilha seguindo o exemplo. Remova os nomes e telefones fictícios antes de importar.
+            </p>
         </section>
     </div>
 
