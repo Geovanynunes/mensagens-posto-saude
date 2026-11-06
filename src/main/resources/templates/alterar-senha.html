@@ -1,32 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alterar senha</title>
+    <title>Configurações da conta</title>
 
     <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
+
 <div th:replace="~{fragments/menu :: menu('usuario')}"></div>
+
 <main class="conteudo">
 
     <a th:href="@{/pacientes}" class="link voltar">
         ← Voltar para pacientes
     </a>
 
-    <h1>Alterar senha</h1>
-    <p class="subtitulo">Atualize sua senha de acesso ao sistema.</p>
+    <h1>Configurações da conta</h1>
+    <p class="subtitulo">
+        Gerencie seu nome de usuário e sua senha de acesso.
+    </p>
 
+    <div th:if="${mensagem}" class="mensagem sucesso">
+        <p th:text="${mensagem}"></p>
+    </div>
+
+    <div th:if="${erro}" class="mensagem erro">
+        <p th:text="${erro}"></p>
+    </div>
+
+    <!-- Alterar nome de usuário -->
+    <section class="card" style="max-width: 550px; margin-bottom: 24px;">
+
+        <h2>Alterar nome de usuário</h2>
+        <p class="subtitulo">
+            Atualize o nome utilizado para entrar no sistema.
+        </p>
+
+        <form th:action="@{/usuario/nome}" method="post">
+
+            <div class="form-group">
+                <label for="novoNome">Novo nome de usuário</label>
+                <input type="text"
+                       id="novoNome"
+                       name="novoNome"
+                       placeholder="Digite o novo nome de usuário"
+                       minlength="3"
+                       maxlength="50"
+                       autocomplete="username"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="senhaAtualNome">Senha atual</label>
+                <input type="password"
+                       id="senhaAtualNome"
+                       name="senhaAtual"
+                       placeholder="Confirme sua senha atual"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primario btn-bloco">
+                Salvar novo nome
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- Alterar senha -->
     <section class="card" style="max-width: 550px;">
 
-        <div th:if="${mensagem}" class="mensagem sucesso">
-            <p th:text="${mensagem}"></p>
-        </div>
-
-        <div th:if="${erro}" class="mensagem erro">
-            <p th:text="${erro}"></p>
-        </div>
+        <h2>Alterar senha</h2>
+        <p class="subtitulo">
+            Escolha uma nova senha para proteger sua conta.
+        </p>
 
         <form th:action="@{/usuario/senha}" method="post">
 
@@ -36,6 +87,7 @@
                        id="senhaAtual"
                        name="senhaAtual"
                        placeholder="Digite sua senha atual"
+                       autocomplete="current-password"
                        required>
             </div>
 
@@ -46,6 +98,7 @@
                        name="novaSenha"
                        placeholder="Mínimo de 8 caracteres"
                        minlength="8"
+                       autocomplete="new-password"
                        required>
             </div>
 
@@ -56,6 +109,7 @@
                        name="confirmarSenha"
                        placeholder="Digite novamente sua nova senha"
                        minlength="8"
+                       autocomplete="new-password"
                        required>
             </div>
 
