@@ -182,12 +182,10 @@ Acesse <http://localhost:8082> e entre com o usuário e a senha definidos em `ad
 
 ## Próximos passos
 
-- [ ] Integração com a API oficial do WhatsApp (Cloud API)
 - [ ] Status de entrega por webhook (entregue, lida, falhou)
 - [ ] Botão para retomar envios interrompidos
-- [ ] Troca de senha e múltiplos usuários
-- [ ] Publicação em nuvem (HTTPS, banco gerenciado, variáveis de ambiente)
+- [ ] Múltiplos usuários
 
 ## Autor
 
-Geovany — projeto acadêmico proposto pelo professor Marcos Mendes.
+Geovany Nunes Gonçalves — projeto acadêmico.
