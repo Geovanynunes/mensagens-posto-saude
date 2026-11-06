@@ -26,11 +26,16 @@ public class WhatsAppController {
         EvolutionConnectionState conexao =
                 evolutionApiService.consultarEstadoConexao();
 
-        String estado = conexao.instance().state();
+        String estado = "close";
+
+        if (conexao != null && conexao.instance() != null
+                && conexao.instance().state() != null) {
+            estado = conexao.instance().state();
+        }
 
         model.addAttribute("estadoConexao", estado);
 
-        if (estado.equals("connecting")) {
+        if ("connecting".equals(estado)) {
             EvolutionQrCode qrCode = evolutionApiService.gerarQrCode();
             model.addAttribute("qrCode", qrCode);
         }

@@ -179,7 +179,18 @@
             }
 
             const dados = await resposta.json();
-            const estado = dados.instance.state;
+            const estado = dados?.instance?.state;
+
+            if (!estado) {
+                const status = document.getElementById('estadoConexao');
+                const indicador = document.getElementById('indicadorStatus');
+
+                status.textContent = 'Estado da conexão indisponível';
+                status.className = 'whatsapp-status desconectado';
+                indicador.className = 'status-indicador desconectado';
+
+                return;
+            }
 
             const status = document.getElementById('estadoConexao');
             const indicador = document.getElementById('indicadorStatus');
