@@ -9,7 +9,7 @@ services:
       PORT: 8082
       ADMIN_USUARIO: ${ADMIN_USUARIO}
       ADMIN_SENHA: ${ADMIN_SENHA}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://app-db:5432/postoteste
+      SPRING_DATASOURCE_URL: jdbc:postgresql://app-db:5432/${APP_DB_NAME:-postoteste}
       SPRING_DATASOURCE_USERNAME: ${APP_DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${APP_DB_PASSWORD}
       MENSAGEM_SENDER: evolution
@@ -32,7 +32,7 @@ services:
     ports:
       - "127.0.0.1:5433:5432"
     environment:
-      POSTGRES_DB: postoteste
+      POSTGRES_DB: ${APP_DB_NAME:-postoteste}
       POSTGRES_USER: ${APP_DB_USER}
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
     volumes:
