@@ -29,6 +29,8 @@ services:
     image: postgres:15-alpine
     container_name: mensagens-posto-saude-db
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
     environment:
       POSTGRES_DB: postoteste
       POSTGRES_USER: ${APP_DB_USER}
